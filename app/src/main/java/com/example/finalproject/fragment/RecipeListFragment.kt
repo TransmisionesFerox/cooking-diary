@@ -41,38 +41,51 @@ class RecipeListFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
         setupUI()
 
-        val service = createApiService()
+
         binding.searchView.setIconified(false)
         binding.searchView.queryHint = "Введите запрос для поиска"
         binding.searchView.requestFocus()
 
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return true
+        loadRecipes("")
+
+        setupSearchListener()
+
+
+    }
+
+    private fun loadRecipes(query: String) {
+        val service = createApiService()
+        service.searchRecipes(query, true).enqueue(object : Callback<RecipeSearchResponse> {
+            override fun onResponse(call: retrofit2.Call<RecipeSearchResponse>, response: retrofit2.Response<RecipeSearchResponse>) {
+                if (response.isSuccessful) {
+                    val recipes = response.body()?.results
+
+                    recipes?.forEach {
+                        adapter.updateItems(recipes)
+                    }
+                } else {
+                    println("Response was not successful")
+                }
+
             }
-
-            override fun onQueryTextChange(query: String): Boolean {
-                service.searchRecipes(query, true).enqueue(object : Callback<RecipeSearchResponse> {
-                    override fun onResponse(call: retrofit2.Call<RecipeSearchResponse>, response: retrofit2.Response<RecipeSearchResponse>) {
-                        if (response.isSuccessful) {
-                            val recipes = response.body()?.results
-
-                            recipes?.forEach {
-                                adapter.updateItems(recipes)
-                            }
-                        } else {
-                            println("Response was not successful")
-                        }
-
-                    }
-                    override fun onFailure(call: Call<RecipeSearchResponse>, t: Throwable) {
-                    }
-                })
-                return true
+            override fun onFailure(call: Call<RecipeSearchResponse>, t: Throwable) {
             }
         })
     }
 
+    private fun setupSearchListener() {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                loadRecipes(query)
+                return true
+            }
+
+            override fun onQueryTextChange(query: String): Boolean {
+
+                return true
+            }
+        })
+    }
 
     private fun setupUI() {
         with(binding) {
