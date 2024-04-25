@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.finalproject.databinding.EatItemBinding
 import com.example.finalproject.model.entity.Recipe
+import com.example.finalproject.model.interfaces.OnRecipeClickListener
 
-class RecipeListAdapter : RecyclerView.Adapter<RecipeListAdapter.ViewHolder>() {
+class RecipeListAdapter(private val listener: OnRecipeClickListener) : RecyclerView.Adapter<RecipeListAdapter.ViewHolder>() {
 
     private val items: ArrayList<Recipe> = arrayListOf()
 
@@ -30,7 +31,7 @@ class RecipeListAdapter : RecyclerView.Adapter<RecipeListAdapter.ViewHolder>() {
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), parent.context
+            ), parent.context, listener
         )
     }
 
@@ -44,8 +45,18 @@ class RecipeListAdapter : RecyclerView.Adapter<RecipeListAdapter.ViewHolder>() {
 
     inner class ViewHolder(
         private val binding: EatItemBinding,
-        private val context: Context
+        private val context: Context,
+        private val listener: OnRecipeClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onRecipeClicked(items[position])
+                }
+            }
+        }
 
         fun bind(recipe: Recipe) {
             with(binding) {

@@ -1,10 +1,9 @@
 package com.example.finalproject.model.entity
 
 data class Recipe(
-    val id: Int,
+    val id: String,
     val title: String,
     val image: String,
-    val imageType: String,
     val summary: String
 )
 
