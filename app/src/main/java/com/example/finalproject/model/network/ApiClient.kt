@@ -1,7 +1,8 @@
 package com.example.finalproject.model.network
 
+import com.example.finalproject.model.entity.Recipe
+import com.example.finalproject.model.entity.RecipeDetails
 import com.example.finalproject.model.entity.RecipeSearchResponse
-import com.example.finalproject.model.entity.RecipeDetail
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -17,6 +18,10 @@ interface RecipeService {
         @Query("query") query: String,
         @Query("addRecipeInformation") addRecipeInformation: Boolean
     ): Call<RecipeSearchResponse>
+    @GET("recipes/{id}/information")
+    fun searchRecipesById(
+        @Path("id") id: Int
+    ): Call<RecipeDetails>
 }
 fun createApiService(): RecipeService {
     val retrofit = Retrofit.Builder()
@@ -25,19 +30,4 @@ fun createApiService(): RecipeService {
         .build()
 
     return retrofit.create(RecipeService::class.java)
-}
-
-interface RecipeDetailService {
-    @Headers("X-Api-Key: e955606fb6764069a224f602de2d7e35")
-    @GET("recipes/{id}/information")
-    fun getRecipeById(@Path("id") recipeId: String): Call<RecipeDetail>
-}
-
-fun createDetailApiService(): RecipeDetailService {
-    val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.spoonacular.com/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    return retrofit.create(RecipeDetailService::class.java)
 }

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">finalproject</string>
+    <string name="cooking_time">Cooking Time:</string>
+    <string name="summary_not_available">Summary Not Available</string>  <string name="ready_in_minutes">Ready in %d Minutes</string>
+    <string name="ingredients">Ingredients:</string>
+    <string name="recipe_title">Recipe Title</string>
 </resources>
