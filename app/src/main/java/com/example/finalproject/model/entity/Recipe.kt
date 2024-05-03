@@ -9,20 +9,6 @@ data class Recipe(
     val image: String,
     val summary: String
 ): Serializable
-data class RecipeDetails(
-    val id: Int,
-    val title: String,
-    val image: String,
-    val summary: String,
-    val imageType: String,
-    val readyInMinutes: String,
-    val ingredients: List<Ingredient> = emptyList()
-): Serializable
-data class Ingredient(
-    val id: Int,
-    val name: String,
-    val quantity: Double
-)
 
 data class RecipeSearchResponse(
     val offset: Int,

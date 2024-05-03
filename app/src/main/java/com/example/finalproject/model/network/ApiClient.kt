@@ -2,7 +2,7 @@ package com.example.finalproject.model.network
 
 import com.example.finalproject.model.entity.Recipe
 import com.example.finalproject.model.entity.RecipeDetail
-import com.example.finalproject.model.entity.RecipeDetails
+//import com.example.finalproject.model.entity.RecipeDetail
 import com.example.finalproject.model.entity.RecipeSearchResponse
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -19,10 +19,7 @@ interface RecipeService {
         @Query("query") query: String,
         @Query("addRecipeInformation") addRecipeInformation: Boolean
     ): Call<RecipeSearchResponse>
-    @GET("recipes/{id}/information")
-    fun searchRecipesById(
-        @Path("id") id: Int
-    ): Call<RecipeDetails>
+
     @GET("recipes/{id}/information")
     fun getRecipeById(@Path("id") recipeId: String): Call<RecipeDetail>
 }

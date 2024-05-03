@@ -1,77 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Предоставленный макет с изображением, названием, кратким описанием и временем приготовления -->
+    <ImageView
+        android:id="@+id/recipe_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".DetailActivity"
-        android:paddingTop="8pt">
-        <TextView
-            android:id="@+id/detail_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="16dp"
-            android:text=""
-            android:textColor="@color/titleColor"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="MissingConstraints" />
+        android:layout_height="200dp"
+        android:scaleType="centerCrop" />
 
-        <ImageView
-            android:id="@+id/detail_image"
-            android:layout_width="match_parent"
-            android:layout_height="100pt"
-            android:layout_gravity="center"
-            android:contentDescription="cook"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_title"
-            android:layout_marginTop="12pt"
-            tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/recipe_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/recipe_title"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8pt"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_image">
+    <TextView
+        android:id="@+id/recipe_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/summary_not_available"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:text="Сooking time:"
-                android:textColor="@color/gray"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:ignore="MissingConstraints" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/cooking_time"
+        android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/detail_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="@color/gray"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:ignore="MissingConstraints" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="min"
+    <TextView
+        android:id="@+id/cooking_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/ready_in_minutes"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-                android:textColor="@color/gray"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:ignore="MissingConstraints" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/ingredients"
+        android:textStyle="bold" />
 
-        </LinearLayout>
+    <!-- RecyclerView для списка ингредиентов -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ingredients_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.core.widget.NestedScrollView>
+</LinearLayout>
