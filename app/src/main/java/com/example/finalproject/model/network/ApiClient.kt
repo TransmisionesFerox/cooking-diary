@@ -1,6 +1,7 @@
 package com.example.finalproject.model.network
 
 import com.example.finalproject.model.entity.Recipe
+import com.example.finalproject.model.entity.RecipeDetail
 import com.example.finalproject.model.entity.RecipeDetails
 import com.example.finalproject.model.entity.RecipeSearchResponse
 import retrofit2.Call
@@ -22,8 +23,11 @@ interface RecipeService {
     fun searchRecipesById(
         @Path("id") id: Int
     ): Call<RecipeDetails>
+    @GET("recipes/{id}/information")
+    fun getRecipeById(@Path("id") recipeId: String): Call<RecipeDetail>
 }
-fun createApiService(): RecipeService {
+
+fun createDetailApiService(): RecipeService {
     val retrofit = Retrofit.Builder()
         .baseUrl("https://api.spoonacular.com/")
         .addConverterFactory(GsonConverterFactory.create())

@@ -15,7 +15,7 @@ import com.example.finalproject.activities.RecipeDetailsActivity
 import com.example.finalproject.adapter.RecipeListAdapter
 import com.example.finalproject.databinding.FragmentRecipeListBinding
 import com.example.finalproject.model.entity.RecipeSearchResponse
-import com.example.finalproject.model.network.createApiService
+import com.example.finalproject.model.network.createDetailApiService
 import com.example.finalproject.adapter.RecipeListAdapter.OnItemClickListener
 import com.example.finalproject.model.entity.Recipe
 import com.example.finalproject.model.entity.RecipeDetails
@@ -65,7 +65,7 @@ class RecipeListFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
         setupUI()
         setupRecyclerView()
-        val service = createApiService()
+        val service = createDetailApiService()
         binding.searchView.setIconified(false)
         binding.searchView.queryHint = "Введите запрос для поиска"
         binding.searchView.requestFocus()
