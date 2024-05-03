@@ -48,7 +48,7 @@ class RecipeListFragment : Fragment(){
                 Log.d("RecipeListFragment", "Recipe clicked: ${recipe.title}")
             }
         }
-
+        adapter.setOnItemClickListener(adapterClickListener)
         binding.eatList.layoutManager = LinearLayoutManager(context)
     }
     override fun onCreateView(

@@ -11,12 +11,13 @@ import com.bumptech.glide.Glide
 import com.example.finalproject.databinding.EatItemBinding
 import com.example.finalproject.model.entity.Recipe
 
-class RecipeListAdapter(private val onItemClickListener: OnItemClickListener? = null) : RecyclerView.Adapter<RecipeListAdapter.ViewHolder>() {
-        interface OnItemClickListener{
-            fun onRecipeClicked(recipe: Recipe)
-        }
+class RecipeListAdapter(private var onItemClickListener: OnItemClickListener? = null) : RecyclerView.Adapter<RecipeListAdapter.ViewHolder>() {
+    interface OnItemClickListener {
+        fun onRecipeClicked(recipe: Recipe)
+    }
 
-        private val items: ArrayList<Recipe> = arrayListOf()
+
+    private val items: ArrayList<Recipe> = arrayListOf()
 
         fun updateItems(newItems: List<Recipe>) {
             val diffCallback = RecipeDiffCallback(this.items, newItems)
@@ -77,7 +78,9 @@ class RecipeListAdapter(private val onItemClickListener: OnItemClickListener? = 
         private fun convertHtmlToPlainText(htmlText: String): String {
             return HtmlCompat.fromHtml(htmlText, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
         }
-
+        fun setOnItemClickListener(listener: OnItemClickListener) {
+            this.onItemClickListener = listener
+        }
         class RecipeDiffCallback(
             private val oldList: List<Recipe>,
             private val newList: List<Recipe>
@@ -95,6 +98,5 @@ class RecipeListAdapter(private val onItemClickListener: OnItemClickListener? = 
             }
 
         }
-
     }
 

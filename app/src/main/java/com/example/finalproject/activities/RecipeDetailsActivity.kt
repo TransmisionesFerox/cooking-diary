@@ -1,6 +1,7 @@
 package com.example.finalproject.activities
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,9 +28,9 @@ class RecipeDetailsActivity : AppCompatActivity() {
         recipeImage = findViewById(R.id.recipe_image)
         recipeTitle = findViewById(R.id.recipe_title)
         recipeSummary = findViewById(R.id.recipe_summary)
-        cookingTimeLabel = findViewById(R.id.cooking_time)  // Update variable name
-        cookingTime = findViewById(R.id.cooking_time)
-        ingredientsList = findViewById(R.id.ingredients_list)
+//        cookingTimeLabel = findViewById(R.id.cooking_time_label)  // Update variable name
+//        cookingTime = findViewById(R.id.cooking_time_value)
+        ingredientsList = findViewById(R.id.ingredients_recycler_view)
 
         // Retrieve recipe data from Intent
         val recipe = intent.getSerializableExtra("recipeDetails") as? RecipeDetails

@@ -8,7 +8,7 @@ data class Recipe(
     val title: String,
     val image: String,
     val summary: String
-)
+): Serializable
 data class RecipeDetails(
     val id: Int,
     val title: String,
