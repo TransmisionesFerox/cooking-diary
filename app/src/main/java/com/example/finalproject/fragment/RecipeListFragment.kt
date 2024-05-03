@@ -15,7 +15,8 @@ import com.example.finalproject.databinding.FragmentRecipeListBinding
 import com.example.finalproject.model.entity.Recipe
 import com.example.finalproject.model.entity.RecipeSearchResponse
 import com.example.finalproject.model.interfaces.OnRecipeClickListener
-import com.example.finalproject.model.network.createApiService
+import com.example.finalproject.model.network.ApiClient
+import com.example.finalproject.model.network.ApiClient.createApiService
 
 import retrofit2.Call
 import retrofit2.Callback
@@ -60,7 +61,7 @@ class RecipeListFragment : Fragment(), OnRecipeClickListener{
     }
 
     private fun loadRecipes(query: String) {
-        val service = createApiService()
+        val service = createApiService
         service.searchRecipes(query, true).enqueue(object : Callback<RecipeSearchResponse> {
             override fun onResponse(call: retrofit2.Call<RecipeSearchResponse>, response: retrofit2.Response<RecipeSearchResponse>) {
                 if (response.isSuccessful) {

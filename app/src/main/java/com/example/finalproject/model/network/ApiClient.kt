@@ -17,27 +17,19 @@ interface RecipeService {
         @Query("query") query: String,
         @Query("addRecipeInformation") addRecipeInformation: Boolean
     ): Call<RecipeSearchResponse>
-}
-fun createApiService(): RecipeService {
-    val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.spoonacular.com/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
 
-    return retrofit.create(RecipeService::class.java)
-}
-
-interface RecipeDetailService {
     @Headers("X-Api-Key: e955606fb6764069a224f602de2d7e35")
     @GET("recipes/{id}/information")
     fun getRecipeById(@Path("id") recipeId: String): Call<RecipeDetail>
 }
 
-fun createDetailApiService(): RecipeDetailService {
-    val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.spoonacular.com/")
+object ApiClient {
+    private const val BASE_URL = "https://api.spoonacular.com/"
+
+    private val retrofit: Retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    return retrofit.create(RecipeDetailService::class.java)
+    val createApiService: RecipeService = retrofit.create(RecipeService::class.java)
 }
