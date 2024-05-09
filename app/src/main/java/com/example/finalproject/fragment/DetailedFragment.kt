@@ -1,9 +1,11 @@
 package com.example.finalproject.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -20,6 +22,7 @@ import retrofit2.Response
 
 class DetailFragment : Fragment() {
     private lateinit var ingredientsList: RecyclerView
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,8 +38,7 @@ class DetailFragment : Fragment() {
                 override fun onResponse(call: Call<RecipeDetail>, response: Response<RecipeDetail>) {
                     if (response.isSuccessful) {
                         val recipeDetail = response.body()
-
-                        println(recipeDetail)
+                        
                         if (recipeDetail != null) {
                             view.findViewById<TextView>(R.id.detail_title).text = recipeDetail.title
                             context?.let {
@@ -61,8 +63,14 @@ class DetailFragment : Fragment() {
             })
         }
 
+        val button: Button = view.findViewById(R.id.button_cook)
 
-
+        button.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container_view, StepsFragment.newInstance(detailId))
+                .addToBackStack(null)
+                .commit()
+        }
         return view
     }
 

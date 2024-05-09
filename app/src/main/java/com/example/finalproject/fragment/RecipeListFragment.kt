@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finalproject.R
@@ -15,7 +14,6 @@ import com.example.finalproject.databinding.FragmentRecipeListBinding
 import com.example.finalproject.model.entity.Recipe
 import com.example.finalproject.model.entity.RecipeSearchResponse
 import com.example.finalproject.model.interfaces.OnRecipeClickListener
-import com.example.finalproject.model.network.ApiClient
 import com.example.finalproject.model.network.ApiClient.createApiService
 
 import retrofit2.Call
@@ -69,12 +67,10 @@ class RecipeListFragment : Fragment(), OnRecipeClickListener{
                     val recipes = response.body()?.results
 
                     if(recipes?.size == 0){
-                        adapter.updateItems(recipes)
+                        adapter.submitList(recipes)
                         Toast.makeText(context, "Такого блюда не найдено", Toast.LENGTH_SHORT).show()
                     } else{
-                        recipes?.forEach {
-                            adapter.updateItems(recipes)
-                        }
+                        adapter.submitList(recipes)
                     }
 
                 } else {
@@ -92,12 +88,12 @@ class RecipeListFragment : Fragment(), OnRecipeClickListener{
     private fun setupSearchListener() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
+
                 loadRecipes(query)
                 return true
             }
 
             override fun onQueryTextChange(query: String): Boolean {
-
                 return true
             }
         })
@@ -122,4 +118,5 @@ class RecipeListFragment : Fragment(), OnRecipeClickListener{
         super.onDestroyView()
         _binding = null
     }
+
 }

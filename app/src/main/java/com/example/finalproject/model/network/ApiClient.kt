@@ -2,6 +2,7 @@ package com.example.finalproject.model.network
 
 import com.example.finalproject.model.entity.RecipeSearchResponse
 import com.example.finalproject.model.entity.RecipeDetail
+import com.example.finalproject.model.entity.RecipeSteps
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,6 +22,11 @@ interface RecipeService {
     @Headers("X-Api-Key: e955606fb6764069a224f602de2d7e35")
     @GET("recipes/{id}/information")
     fun getRecipeById(@Path("id") recipeId: String): Call<RecipeDetail>
+
+    @Headers("X-Api-Key: e955606fb6764069a224f602de2d7e35")
+    @GET("recipes/{id}/analyzedInstructions")
+    fun getStepsById(@Path("id") recipeId: String): Call<List<RecipeSteps>>
+
 }
 
 object ApiClient {

@@ -12,7 +12,7 @@ data class Ingredient(
     val id: Int,
     val name: String,
     val amount: Double,
-    val measures: Measures
+    val measures: Measures,
 )
 data class Measures(
     val us: Measure
