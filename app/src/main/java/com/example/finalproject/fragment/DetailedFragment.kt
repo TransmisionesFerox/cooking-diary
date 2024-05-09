@@ -47,9 +47,8 @@ class DetailFragment : Fragment() {
                                     .into(view.findViewById<ImageView>(R.id.detail_image))
                             }
                             view.findViewById<TextView>(R.id.detail_time).text = recipeDetail.readyInMinutes.toString()
-
-                            ingredientsList.layoutManager = LinearLayoutManager(context)
-                            val adapter = IngridientListAdapter(recipeDetail.extendedIngredients)
+                            val adapter = IngridientListAdapter()
+                            adapter.submitList(recipeDetail.extendedIngredients)
                             ingredientsList.adapter = adapter
                         }
                     } else {

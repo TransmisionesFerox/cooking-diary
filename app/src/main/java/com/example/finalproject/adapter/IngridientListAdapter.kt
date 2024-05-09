@@ -2,15 +2,14 @@ package com.example.finalproject.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
 import com.example.finalproject.model.entity.Ingredient
-import kotlin.math.log
 
-class IngridientListAdapter(private val ingredients: List<Ingredient>) :
-    RecyclerView.Adapter<IngridientListAdapter.IngredientViewHolder>()  {
+class IngridientListAdapter : ListAdapter<Ingredient, IngridientListAdapter.IngredientViewHolder>(IngredientDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredientViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -19,23 +18,31 @@ class IngridientListAdapter(private val ingredients: List<Ingredient>) :
     }
 
     override fun onBindViewHolder(holder: IngredientViewHolder, position: Int) {
-        val ingredient = ingredients[position]
+        val ingredient = getItem(position)
 
-        holder.ingredientName.text = ingredient.name
-        val formattedQuantity = String.format("%.2f", ingredient.amount) + " "
-        holder.ingredientQuantity.text = formattedQuantity
-        holder.ingredientMeasure.text = ingredient.measures.us.unitShort
-    }
-
-    override fun getItemCount(): Int {
-        return ingredients.size
+        holder.bind(ingredient)
     }
 
     class IngredientViewHolder(itemView: android.view.View) : RecyclerView.ViewHolder(itemView) {
-        val ingredientName: TextView = itemView.findViewById(R.id.ingridient_name)
-        val ingredientQuantity: TextView = itemView.findViewById(R.id.ingridient_amount)
-        val ingredientMeasure: TextView = itemView.findViewById(R.id.ingridient_measure)
+        private val ingredientName: TextView = itemView.findViewById(R.id.ingridient_name)
+        private val ingredientQuantity: TextView = itemView.findViewById(R.id.ingridient_amount)
+        private val ingredientMeasure: TextView = itemView.findViewById(R.id.ingridient_measure)
+
+        fun bind(ingredient: Ingredient) {
+            ingredientName.text = ingredient.name
+            val formattedQuantity = String.format("%.2f", ingredient.amount) + " "
+            ingredientQuantity.text = formattedQuantity
+            ingredientMeasure.text = ingredient.measures.us.unitShort
+        }
     }
 
+    class IngredientDiffCallback : DiffUtil.ItemCallback<Ingredient>() {
+        override fun areItemsTheSame(oldItem: Ingredient, newItem: Ingredient): Boolean {
+            return oldItem.id == newItem.id
+        }
 
+        override fun areContentsTheSame(oldItem: Ingredient, newItem: Ingredient): Boolean {
+            return oldItem == newItem
+        }
+    }
 }
