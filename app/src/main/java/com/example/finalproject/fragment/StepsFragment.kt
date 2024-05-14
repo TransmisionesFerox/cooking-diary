@@ -46,7 +46,7 @@ class StepsFragment : Fragment() {
                     val steps = withContext(Dispatchers.IO) {
                         recipeService.getStepsById(it)
                     }
-                    adapter.setSteps(steps.flatMap { it.steps })
+                    adapter.submitList(steps.flatMap { it.steps })
                 } catch (e: Exception) {
                     println("Error fetching recipe steps: ${e.message}")
                 }

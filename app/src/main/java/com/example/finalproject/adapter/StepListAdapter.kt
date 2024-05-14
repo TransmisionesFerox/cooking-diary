@@ -2,14 +2,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
 import com.example.finalproject.model.entity.RecipeStep
 
-class StepListAdapter : RecyclerView.Adapter<StepListAdapter.StepViewHolder>() {
-
-    private var steps: List<RecipeStep> = emptyList()
+class StepListAdapter : ListAdapter<RecipeStep, StepListAdapter.StepViewHolder>(StepDiffCallback()) {
     class StepViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val stepTextView: TextView = view.findViewById(R.id.step_number)
         private val imagesRecyclerViewEquipment: RecyclerView = view.findViewById(R.id.equipment_images)
@@ -25,15 +25,17 @@ class StepListAdapter : RecyclerView.Adapter<StepListAdapter.StepViewHolder>() {
             if (step.equipment.size != 0){
                 equipmentTitle.text = "Equipment:"
                 imagesRecyclerViewEquipment.layoutManager = LinearLayoutManager(imagesRecyclerViewEquipment.context, LinearLayoutManager.HORIZONTAL, false)
-                val imageUrlsEquipment = step.equipment.map { it.image }
-                imagesRecyclerViewEquipment.adapter = ImagesAdapter(imageUrlsEquipment)
+                val equipmentAdapter = ImagesAdapter()
+                imagesRecyclerViewEquipment.adapter = equipmentAdapter
+                equipmentAdapter.submitList(step.equipment.map { it.image })
             }
 
             if (step.ingredients.size != 0){
                 IngridientsTitle.text = "Ingridients:"
                 imagesRecyclerViewIngridients.layoutManager = LinearLayoutManager(imagesRecyclerViewIngridients.context, LinearLayoutManager.HORIZONTAL, false)
-                val imageUrlsIngridients = step.ingredients.map { it.image }
-                imagesRecyclerViewIngridients.adapter = ImagesAdapter(imageUrlsIngridients)
+                val ingredientsAdapter = ImagesAdapter()
+                imagesRecyclerViewIngridients.adapter = ingredientsAdapter
+                ingredientsAdapter.submitList(step.ingredients.map { it.image })
             }
 
             StepDescr.text = step.step
@@ -45,15 +47,18 @@ class StepListAdapter : RecyclerView.Adapter<StepListAdapter.StepViewHolder>() {
         return StepViewHolder(view)
     }
 
-    override fun getItemCount(): Int = steps.size
-
-    fun setSteps(steps: List<RecipeStep>) {
-        this.steps = steps
-        notifyDataSetChanged()
-    }
-
     override fun onBindViewHolder(holder: StepViewHolder, position: Int) {
-        val currentStep = steps[position]
+        val currentStep = getItem(position)
         holder.bind(currentStep)
     }
+    class StepDiffCallback : DiffUtil.ItemCallback<RecipeStep>() {
+        override fun areItemsTheSame(oldItem: RecipeStep, newItem: RecipeStep): Boolean {
+            return oldItem.number == newItem.number
+        }
+
+        override fun areContentsTheSame(oldItem: RecipeStep, newItem: RecipeStep): Boolean {
+            return oldItem == newItem
+        }
+    }
 }
+
