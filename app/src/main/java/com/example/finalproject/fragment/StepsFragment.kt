@@ -1,53 +1,59 @@
 package com.example.finalproject.fragment
 
+import StepListAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
+import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
-import com.example.finalproject.adapter.IngridientListAdapter
-import com.example.finalproject.model.entity.RecipeDetail
-import com.example.finalproject.model.entity.RecipeSteps
-import com.example.finalproject.model.network.ApiClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.finalproject.model.network.RecipeService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 
 class StepsFragment : Fragment() {
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: StepListAdapter
+
+    private val recipeService: RecipeService by inject()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.frgment_steps, container, false)
-        val recipeId = arguments?.getString("detailId")
-        val service = ApiClient.createApiService
 
-        if (recipeId != null) {
-            service.getStepsById(recipeId).enqueue(object : Callback<List<RecipeSteps>> {
-                override fun onResponse(call: Call<List<RecipeSteps>>, response: Response<List<RecipeSteps>>) {
-                    if (response.isSuccessful) {
-                        val recipeSteps = response.body()
+        recyclerView = view.findViewById(R.id.steps_list)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        adapter = StepListAdapter()
+        recyclerView.adapter = adapter
 
-                        println(recipeSteps)
-//                        view.findViewById<TextView>(R.id.step_number).text = recipeSteps
-                    } else {
-                        println("Response was not successful")
-                    }
-                }
-
-                override fun onFailure(call: Call<List<RecipeSteps>>, t: Throwable) {
-                    println("Error fetching recipe steps: ${t.message}")
-                }
-            })
-        }
+        loadSteps()
 
         return view
     }
+
+    private fun loadSteps() {
+        val recipeId = arguments?.getString("detailId")
+
+        recipeId?.let {
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    val steps = withContext(Dispatchers.IO) {
+                        recipeService.getStepsById(it)
+                    }
+                    adapter.setSteps(steps.flatMap { it.steps })
+                } catch (e: Exception) {
+                    println("Error fetching recipe steps: ${e.message}")
+                }
+            }
+        }
+    }
+
 
     companion object {
         fun newInstance(detailId: String?) : StepsFragment{

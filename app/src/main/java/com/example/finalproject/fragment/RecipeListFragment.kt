@@ -12,14 +12,17 @@ import com.example.finalproject.R
 import com.example.finalproject.adapter.RecipeListAdapter
 import com.example.finalproject.databinding.FragmentRecipeListBinding
 import com.example.finalproject.model.entity.Recipe
-import com.example.finalproject.model.entity.RecipeSearchResponse
 import com.example.finalproject.model.interfaces.OnRecipeClickListener
-import com.example.finalproject.model.network.ApiClient.createApiService
-
-import retrofit2.Call
-import retrofit2.Callback
+import com.example.finalproject.model.network.RecipeService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 
 class RecipeListFragment : Fragment(), OnRecipeClickListener{
+
+    private val recipeService: RecipeService by inject()
     companion object {
         fun newInstance() = RecipeListFragment()
     }
@@ -59,30 +62,23 @@ class RecipeListFragment : Fragment(), OnRecipeClickListener{
     }
 
     private fun loadRecipes(query: String) {
-        val service = createApiService
-        service.searchRecipes(query, true).enqueue(object : Callback<RecipeSearchResponse> {
-            override fun onResponse(call: retrofit2.Call<RecipeSearchResponse>, response: retrofit2.Response<RecipeSearchResponse>) {
-                if (response.isSuccessful) {
-
-                    val recipes = response.body()?.results
-
-                    if(recipes?.size == 0){
-                        adapter.submitList(recipes)
-                        Toast.makeText(context, "Такого блюда не найдено", Toast.LENGTH_SHORT).show()
-                    } else{
-                        adapter.submitList(recipes)
-                    }
-
-                } else {
-                    println("Response was not successful")
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    recipeService.searchRecipes(query, true)
                 }
 
-
+                if (response.results.isEmpty()) {
+                    adapter.submitList(response.results)
+                    Toast.makeText(context, "Такого блюда не найдено", Toast.LENGTH_SHORT).show()
+                } else {
+                    adapter.submitList(response.results)
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
+                println("Error fetching recipes: ${e.message}")
             }
-            override fun onFailure(call: Call<RecipeSearchResponse>, t: Throwable) {
-                Toast.makeText(context, "Ошибка", Toast.LENGTH_SHORT).show()
-            }
-        })
+        }
     }
 
     private fun setupSearchListener() {

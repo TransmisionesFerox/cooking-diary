@@ -75,4 +75,3 @@ class RecipeListAdapter(private val listener: OnRecipeClickListener) :
         }
     }
 }
-

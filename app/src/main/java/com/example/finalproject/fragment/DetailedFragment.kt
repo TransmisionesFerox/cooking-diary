@@ -14,14 +14,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.finalproject.R
 import com.example.finalproject.adapter.IngridientListAdapter
-import com.example.finalproject.model.entity.RecipeDetail
-import com.example.finalproject.model.network.ApiClient.createApiService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.finalproject.model.network.RecipeService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 
 class DetailFragment : Fragment() {
     private lateinit var ingredientsList: RecyclerView
+    private val recipeService: RecipeService by inject()
+
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,36 +33,10 @@ class DetailFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_detailed, container, false)
         val detailId = arguments?.getString("recipeId")
         ingredientsList = view.findViewById(R.id.ingridients)
-
-        val service = createApiService
+        ingredientsList.layoutManager = LinearLayoutManager(context)
 
         if (detailId != null) {
-            service.getRecipeById(detailId).enqueue(object : Callback<RecipeDetail> {
-                override fun onResponse(call: Call<RecipeDetail>, response: Response<RecipeDetail>) {
-                    if (response.isSuccessful) {
-                        val recipeDetail = response.body()
-                        
-                        if (recipeDetail != null) {
-                            view.findViewById<TextView>(R.id.detail_title).text = recipeDetail.title
-                            context?.let {
-                                Glide.with(it)
-                                    .load(recipeDetail.image)
-                                    .into(view.findViewById<ImageView>(R.id.detail_image))
-                            }
-                            view.findViewById<TextView>(R.id.detail_time).text = recipeDetail.readyInMinutes.toString()
-                            val adapter = IngridientListAdapter()
-                            adapter.submitList(recipeDetail.extendedIngredients)
-                            ingredientsList.adapter = adapter
-                        }
-                    } else {
-                        println("Response was not successful")
-                    }
-                }
-
-                override fun onFailure(call: Call<RecipeDetail>, t: Throwable) {
-                    TODO("Not yet implemented")
-                }
-            })
+            loadRecipeDetail(detailId, view)
         }
 
         val button: Button = view.findViewById(R.id.button_cook)
@@ -73,6 +50,27 @@ class DetailFragment : Fragment() {
         return view
     }
 
+    private fun loadRecipeDetail(detailId: String, view: View) {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val recipeDetail = withContext(Dispatchers.IO) {
+                    recipeService.getRecipeById(detailId)
+                }
+                view.findViewById<TextView>(R.id.detail_title).text = recipeDetail.title
+                context?.let {
+                    Glide.with(it)
+                        .load(recipeDetail.image)
+                        .into(view.findViewById<ImageView>(R.id.detail_image))
+                }
+                view.findViewById<TextView>(R.id.detail_time).text = recipeDetail.readyInMinutes.toString()
+                val adapter = IngridientListAdapter()
+                adapter.submitList(recipeDetail.extendedIngredients)
+                ingredientsList.adapter = adapter
+            } catch (e: Exception) {
+                println("Error fetching recipe details: ${e.message}")
+            }
+        }
+    }
 
     companion object {
         fun newInstance(detailId: String): DetailFragment {
