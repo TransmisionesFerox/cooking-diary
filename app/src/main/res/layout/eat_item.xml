@@ -13,12 +13,16 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
 
+
         android:padding="16dp">
+
         <ImageView
             android:layout_width="50pt"
             android:layout_height="50pt"
             android:id="@+id/eat_image"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -58,7 +62,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
 
 
     </LinearLayout>
