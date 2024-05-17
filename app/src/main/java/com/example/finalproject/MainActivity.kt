@@ -1,11 +1,13 @@
 package com.example.finalproject
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.finalproject.databinding.ActivityMainBinding
 import com.example.finalproject.fragment.RecipeListFragment
 import com.example.finalproject.model.di.appModule
 import com.example.finalproject.model.di.viewModelModule
+import com.example.finalproject.model.entity.Recipe
 import org.koin.core.context.startKoin
 import org.koin.android.ext.koin.androidContext
 
@@ -30,6 +32,18 @@ class MainActivity : AppCompatActivity() {
             .commit()
 
     }
+    //val sharedPreferences = getSharedPreferences("my_pref_file", Context.MODE_PRIVATE)
+    //fun addRecipeToFavorites(recipe: Recipe) {
+        //val editor = sharedPreferences.edit()
+        //editor.putBoolean(recipe.id.toString(), true) // Используйте уникальный идентификатор блюда в качестве ключа
+        //editor.apply()
+    //}
+
+    //val editor = sharedPreferences.edit()
+    //editor.putBoolean("is_favorite", true)
+    //editor.apply()
+
+    //val isFavorite = sharedPreferences.getBoolean("is_favorite", false)
 
 
 }

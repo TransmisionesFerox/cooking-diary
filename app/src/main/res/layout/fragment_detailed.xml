@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
             android:layout_marginTop="16dp"
-            android:text="Title"
+            android:text="Favorite"
             android:textColor="@color/titleColor"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -71,20 +71,33 @@
 
         </LinearLayout>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Let`s COOK!"
-            android:id="@+id/button_cook"
-            android:layout_marginHorizontal="8dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_cook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="0dp"
+                android:text="Let`s COOK!" />
+
+            <Button
+                android:layout_width="59dp"
+                android:layout_height="60dp"
+                android:layout_weight="0"
+                android:background="@drawable/baseline_favorite_border_24"
+                />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
-            android:layout_marginVertical="8dp"
+            android:layout_marginVertical="12dp"
             android:text="Ingridients:"
             android:textColor="@color/gray"
             android:textSize="24sp"
