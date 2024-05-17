@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.example.finalproject.databinding.ActivityMainBinding
 import com.example.finalproject.fragment.RecipeListFragment
 import com.example.finalproject.model.di.appModule
+import com.example.finalproject.model.di.viewModelModule
 import org.koin.core.context.startKoin
 import org.koin.android.ext.koin.androidContext
 
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity() {
         startKoin {
             androidContext(this@MainActivity)
             modules(appModule)
+            modules(viewModelModule)
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)

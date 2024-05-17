@@ -22,6 +22,6 @@ interface RecipeService {
 
     @Headers("X-Api-Key: e955606fb6764069a224f602de2d7e35")
     @GET("recipes/{id}/analyzedInstructions")
-    suspend fun getStepsById(@Path("id") recipeId: String): List<RecipeSteps>
+    suspend fun getStepsById(@Path("id") recipeId: String): List<RecipeSteps>?
 
 }

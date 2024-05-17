@@ -1,6 +1,5 @@
 package com.example.finalproject.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,23 +8,24 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.finalproject.R
+import com.example.finalproject.ViewModel.DetailViewModel
 import com.example.finalproject.adapter.IngridientListAdapter
-import com.example.finalproject.model.network.RecipeService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailFragment : Fragment() {
     private lateinit var ingredientsList: RecyclerView
-    private val recipeService: RecipeService by inject()
+    private val viewModel: DetailViewModel by viewModel()
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,41 +35,41 @@ class DetailFragment : Fragment() {
         ingredientsList = view.findViewById(R.id.ingridients)
         ingredientsList.layoutManager = LinearLayoutManager(context)
 
-        if (detailId != null) {
-            loadRecipeDetail(detailId, view)
+        detailId?.let { id ->
+            viewModel.loadRecipeDetail(id)
+            observeRecipeDetail(view)
         }
 
         val button: Button = view.findViewById(R.id.button_cook)
 
         button.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container_view, StepsFragment.newInstance(detailId))
-                .addToBackStack(null)
-                .commit()
+            detailId?.let { id ->
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, StepsFragment.newInstance(id))
+                    .addToBackStack(null)
+                    .commit()
+            }
         }
         return view
     }
 
-    private fun loadRecipeDetail(detailId: String, view: View) {
-        CoroutineScope(Dispatchers.Main).launch {
-            try {
-                val recipeDetail = withContext(Dispatchers.IO) {
-                    recipeService.getRecipeById(detailId)
-                }
-                view.findViewById<TextView>(R.id.detail_title).text = recipeDetail.title
-                context?.let {
-                    Glide.with(it)
-                        .load(recipeDetail.image)
-                        .into(view.findViewById<ImageView>(R.id.detail_image))
-                }
-                view.findViewById<TextView>(R.id.detail_time).text = recipeDetail.readyInMinutes.toString()
-                val adapter = IngridientListAdapter()
-                adapter.submitList(recipeDetail.extendedIngredients)
-                ingredientsList.adapter = adapter
-            } catch (e: Exception) {
-                println("Error fetching recipe details: ${e.message}")
+    private fun observeRecipeDetail(view: View) {
+        viewModel.recipeDetail.observe(viewLifecycleOwner, Observer { recipeDetail ->
+            view.findViewById<TextView>(R.id.detail_title).text = recipeDetail.title
+            context?.let {
+                Glide.with(it)
+                    .load(recipeDetail.image)
+                    .into(view.findViewById<ImageView>(R.id.detail_image))
             }
-        }
+            view.findViewById<TextView>(R.id.detail_time).text = recipeDetail.readyInMinutes.toString()
+            val adapter = IngridientListAdapter()
+            adapter.submitList(recipeDetail.extendedIngredients)
+            ingredientsList.adapter = adapter
+        })
+
+        viewModel.error.observe(viewLifecycleOwner, Observer { errorMessage ->
+            println("Error: $errorMessage")
+        })
     }
 
     companion object {
@@ -81,5 +81,4 @@ class DetailFragment : Fragment() {
             return fragment
         }
     }
-
 }

@@ -1,26 +1,45 @@
 package com.example.finalproject.fragment
-
-import StepListAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
-import com.example.finalproject.model.network.RecipeService
+import StepListAdapter
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.example.finalproject.ViewModel.StepsViewModel
+import com.example.finalproject.model.entity.RecipeStep
+import com.example.finalproject.repository.RecipeRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class StepsFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: StepListAdapter
+//    private val viewModel: StepsViewModel by inject()
+//    private val viewModel: StepsViewModel by viewModels()
+    private val recipeRepository: RecipeRepository by inject() // Предполагается, что у вас уже настроен Koin для внедрения зависимостей
 
-    private val recipeService: RecipeService by inject()
+    private val viewModel: StepsViewModel by viewModels {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+                if (modelClass.isAssignableFrom(StepsViewModel::class.java)) {
+                    return StepsViewModel(recipeRepository) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel class")
+            }
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,28 +51,22 @@ class StepsFragment : Fragment() {
         adapter = StepListAdapter()
         recyclerView.adapter = adapter
 
-        loadSteps()
+        val recipeId = arguments?.getString("detailId")
+        recipeId?.let {
+            viewModel.loadSteps(it)
+        }
+
+        viewModel.steps.observe(viewLifecycleOwner, Observer { steps ->
+            val mutableSteps: MutableList<RecipeStep> = steps.map { it.steps }.flatten().toMutableList()
+            adapter.submitList(mutableSteps)
+        })
+
+        viewModel.error.observe(viewLifecycleOwner, Observer { errorMessage ->
+            println("Error: $errorMessage")
+        })
 
         return view
     }
-
-    private fun loadSteps() {
-        val recipeId = arguments?.getString("detailId")
-
-        recipeId?.let {
-            CoroutineScope(Dispatchers.Main).launch {
-                try {
-                    val steps = withContext(Dispatchers.IO) {
-                        recipeService.getStepsById(it)
-                    }
-                    adapter.submitList(steps.flatMap { it.steps })
-                } catch (e: Exception) {
-                    println("Error fetching recipe steps: ${e.message}")
-                }
-            }
-        }
-    }
-
 
     companion object {
         fun newInstance(detailId: String?) : StepsFragment{
@@ -64,5 +77,4 @@ class StepsFragment : Fragment() {
             return fragment
         }
     }
-
 }
