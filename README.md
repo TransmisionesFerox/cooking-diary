@@ -1,4 +1,7 @@
 ## About The Project
+
+[![Product Name Screen Shot][product-screenshot]](screen_app.png)
+
 Would you like to start cooking your own food? Have you faced the fact that most recipes are in different places, from which it is not clear what to do and how to do it correctly? Then the _"Cooking Diary"_ application is at your service.
 This app aims to make it easier to find different recipes for different dishes.
  
