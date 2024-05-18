@@ -16,19 +16,12 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.finalproject.ViewModel.StepsViewModel
 import com.example.finalproject.model.entity.RecipeStep
 import com.example.finalproject.repository.RecipeRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class StepsFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: StepListAdapter
-//    private val viewModel: StepsViewModel by inject()
-//    private val viewModel: StepsViewModel by viewModels()
-    private val recipeRepository: RecipeRepository by inject() // Предполагается, что у вас уже настроен Koin для внедрения зависимостей
+    private val recipeRepository: RecipeRepository by inject()
 
     private val viewModel: StepsViewModel by viewModels {
         object : ViewModelProvider.Factory {

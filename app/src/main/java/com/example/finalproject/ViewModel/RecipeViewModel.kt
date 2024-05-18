@@ -26,5 +26,4 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         }
     }
 
-    // Остальные методы для получения деталей рецепта и шагов рецепта
 }
