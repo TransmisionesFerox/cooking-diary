@@ -1,6 +1,5 @@
 package com.example.finalproject.model.di
 
-import androidx.lifecycle.ViewModel
 import com.example.finalproject.ViewModel.DetailViewModel
 import com.example.finalproject.repository.RecipeRepository
 import com.example.finalproject.ViewModel.RecipeViewModel
