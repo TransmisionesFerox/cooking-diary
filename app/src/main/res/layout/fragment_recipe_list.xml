@@ -13,7 +13,6 @@
         android:id="@+id/searchView"
         android:layout_width="379dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/layout_bg"
         android:queryHint="Search here..."
         tools:ignore="MissingConstraints" />
 

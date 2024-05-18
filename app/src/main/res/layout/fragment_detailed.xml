@@ -84,12 +84,6 @@
                 android:layout_marginTop="0dp"
                 android:text="Let`s COOK!" />
 
-            <Button
-                android:layout_width="59dp"
-                android:layout_height="60dp"
-                android:layout_weight="0"
-                android:background="@drawable/baseline_favorite_border_24"
-                />
         </LinearLayout>
 
         <TextView
